@@ -10,7 +10,7 @@
 // ====== 只需要先修改這裡 ======
 const CONFIG={brand:'FRAME',email:'your-email@example.com'};
 // 示範照片來自 Unsplash Source Images（images.unsplash.com）；正式公開請改成自己的作品並確認使用授權。
-const works=[
+let works=[
  {title:'光影之間',category:'人像',src:'photos/DSC03778.jpg'},
  {title:'午後片刻',category:'生活',src:'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1000&q=85'},
  {title:'婚禮序曲',category:'婚禮',src:'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1000&q=85'},
@@ -18,7 +18,22 @@ const works=[
  {title:'相守',category:'婚禮',src:'https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=1000&q=85'},
  {title:'日常的溫度',category:'生活',src:'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1000&q=85'}
 ];
-const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);let current='全部';
+fetch('./works.json', {cache:'no-store'})
+  .then(response => {
+    if (!response.ok) throw new Error('讀取失敗');
+    return response.json();
+  })
+  .then(data => {
+    if (!Array.isArray(data)) throw new Error('格式錯誤');
+    works = data;
+    render('#featured', works.slice(0,4));
+    render('#gallery', works);
+    if (works.length > 0) {
+      $('#hero-img').src = works[0].src;
+    }
+  })
+  .catch(error => console.error('作品載入失敗', error));
+ const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);let current='全部';
 function showPage(page){$$('.page').forEach(e=>e.classList.toggle('active',e.id===page));$$('.nav button').forEach(e=>e.classList.toggle('active',e.dataset.page===page));location.hash=page;window.scrollTo(0,0)}
 $$('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
 function tile(w,i){const b=document.createElement('button');b.className='tile';b.innerHTML=`<div class="photo"><img loading="lazy" src="${w.src}" alt="${w.title}（示範照片）"></div><div class="label">${w.title}</div><div class="meta">${w.category} / DEMO IMAGE</div>`;b.addEventListener('click',()=>{$('#large').src=w.src.replace('w=1000','w=1600');$('#large-caption').textContent=`${w.title} · ${w.category} · 示範照片`;$('#lightbox').classList.add('show')});return b}
