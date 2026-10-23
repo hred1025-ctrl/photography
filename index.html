@@ -36,7 +36,7 @@ fetch('./works.json', {cache:'no-store'})
  const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);let current='全部';
 function showPage(page){$$('.page').forEach(e=>e.classList.toggle('active',e.id===page));$$('.nav button').forEach(e=>e.classList.toggle('active',e.dataset.page===page));location.hash=page;window.scrollTo(0,0)}
 $$('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
-function tile(w,i){const b=document.createElement('button');b.className='tile';b.innerHTML=`<div class="photo"><img loading="lazy" src="${w.src}" alt="${w.title}（示範照片）"></div><div class="label">${w.title}</div><div class="meta">${w.category} / DEMO IMAGE</div>`;b.addEventListener('click',()=>{$('#large').src=w.src.replace('w=1000','w=1600');$('#large-caption').textContent=`${w.title} · ${w.category} · 示範照片`;$('#lightbox').classList.add('show')});return b}
+
 function render(target,items){const root=$(target);root.replaceChildren(...items.map(tile))}
 function filters(){const f=$('#filters');f.replaceChildren();['全部','婚禮','人像','生活'].forEach(c=>{const b=document.createElement('button');b.className='filter'+(c===current?' active':'');b.textContent=c;b.onclick=()=>{current=c;filters();render('#gallery',c==='全部'?works:works.filter(w=>w.category===c))};f.append(b)})}
 $('#hero-img').src=works[2].src;render('#featured',works.slice(0,4));filters();render('#gallery',works);$('#year').textContent=new Date().getFullYear();$('#close').onclick=()=>$('#lightbox').classList.remove('show');$('#lightbox').onclick=e=>{if(e.target.id==='lightbox')$('#lightbox').classList.remove('show')};document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#lightbox').classList.remove('show')});
